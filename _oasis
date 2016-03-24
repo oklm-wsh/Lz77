@@ -1,0 +1,57 @@
+OASISFormat:            0.4
+Name:                   lz77
+Version:                0.1
+Synopsis:               Inflate and Deflate Lz77
+Description:            Fast implementation of Lz77
+Authors:                Romain Calascibetta
+Maintainers:            Romain Calascibetta <romain.calascibetta@gmail.com>
+Homepage:               https://github.com/oklm-wsh/Lz77
+License:                MIT
+Plugins:                META (0.3), DevFiles (0.3)
+BuildTools:             ocamlbuild
+OCamlVersion:           >= 4.02
+AlphaFeatures:          ocamlbuild_more_args
+
+Library lz77
+  Path:                 lib
+  Modules:              RingBuffer, Lz77
+  NativeOpt:            -inline 100
+
+Document "lz77"
+  Type:                 ocamlbuild (0.4)
+  BuildTools:           ocamldoc
+  Title:                "Lz77"
+  PostCommand:          cp doc/* lz77.docdir/
+  XOCamlbuildPath:      .
+  XOCamlbuildLibraries: lz77
+  XOCamlbuildExtraArgs:
+    "-docflags '-colorize-code -keep-code -charset utf-8'"
+
+Executable loop
+  Install:              false
+  Path:                 bin
+  MainIs:               loop.ml
+  CompiledObject:       best
+  BuildDepends:         lz77, unix
+  NativeOpt:            -inline 100
+
+SourceRepository master
+  Type:                 git
+  Location:             https://github.com/oklm-wsh/Lz77.git
+  Browser:              https://github.com/oklm-wsh/Lz77
+
+Executable test_lz77
+  Path:                 lib_test
+  Build$:               flag(tests)
+  Install:              false
+  CompiledObject:       best
+  MainIs:               lz77_test.ml
+  BuildDepends:         lz77, alcotest, cstruct, mstruct, re.str
+
+Test test_lz77
+  Run$:                 flag(tests)
+  TestTools:            test_lz77
+  Command:
+    cp ./lib/*.ml ./lib_test/files/ \
+    && $test_lz77
+  WorkingDirectory:     .
